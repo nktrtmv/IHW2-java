@@ -1,16 +1,13 @@
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class FileSorter {
-    private String folder;
-    private String result;
+    private final String folder;
+    private final String result;
     private ArrayList<Path> folderFiles;
 
     public FileSorter(String folder, String result) throws IOException {
@@ -28,9 +25,9 @@ public class FileSorter {
 
     public boolean sort() {
         try {
-            Graph graph = new Graph(folderFiles);
-            graph.sort();
-            folderFiles = graph.folderFiles;
+            FileGraph fileGraph = new FileGraph(folderFiles);
+            fileGraph.sort();
+            folderFiles = fileGraph.getFiles();
             return true;
         } catch (RuntimeException e) {
             return false;
