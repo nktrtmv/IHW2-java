@@ -1,50 +1,82 @@
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.*;
 
 public class FileGraph {
-    private ArrayList<Node> nodes;
     private ArrayList<Path> files;
-    private int[][] adjacencyMatrix;
+    private final HashMap<Path, ArrayList<Node>> adjacencyList;
+    private final ArrayList<Path> result;
 
     public boolean sort() {
-        if (isValid()){
-            bfsSort();
+        if (!hasLoop()) {
+            sortFiles();
             return true;
         }
         return false;
     }
 
-    private void bfsSort(){
-        // топологическая сортировка графа
+    private void sortFiles() {
+        HashSet<Path> visited = new HashSet<>();
+        for (Path path : adjacencyList.keySet()) {
+            if (!visited.contains(path)) {
+                visited.addAll(bfs(path));
+            }
+        }
+        files = result;
+    }
+
+    private HashSet<Path> bfs(Path path) {
+        HashSet<Path> visited = new HashSet<>();
+        ArrayDeque<Path> queue = new ArrayDeque<>();
+        queue.addLast(path);
+        while (!queue.isEmpty()){
+            result.add(queue.getFirst());
+            visited.add(queue.getFirst());
+            for (Node node : adjacencyList.get(queue.pop())){
+                queue.addLast(node.getPath());
+            }
+        }
+        return visited;
     }
 
     public FileGraph(ArrayList<Path> folderFiles) {
         this.files = folderFiles;
-        nodes = new ArrayList<>();
+        result = new ArrayList<>();
+        ArrayList<Node> nodes = new ArrayList<>();
         for (Path file : files) {
             nodes.add(new Node(file, files));
         }
-        adjacencyMatrix = new int[nodes.size()][nodes.size()];
-        for (Node node: nodes) {
-            for (Path dependency: node.getDependencies()) {
-                adjacencyMatrix[files.indexOf(dependency)][files.indexOf(node.getPath())] = 1;
+        adjacencyList = new HashMap<>();
+        for (Node node : nodes) {
+            adjacencyList.put(node.getPath(), new ArrayList<>());
+        }
+        for (Node node : nodes) {
+            for (Path dependency : node.getDependencies()) {
+                adjacencyList.get(dependency).add(node);
             }
         }
     }
 
-    private boolean isValid(){
-        for (int i = 0; i < adjacencyMatrix.length; ++i) {
-            for (int j = 0; j < adjacencyMatrix[i].length; ++j) {
-                if (i != j && adjacencyMatrix[i][j] == adjacencyMatrix[j][i] && adjacencyMatrix[i][j] != 0) {
-                    System.out.println("Обнаружены файлы с ссылками друг на друга.");
-                    return false;
-                }
+    private boolean hasLoop() {
+        boolean flag = false;
+        for (Path dependency : adjacencyList.keySet()) {
+            for (Node node : adjacencyList.get(dependency)) {
+                flag = flag || dfs(dependency, node.getPath());
             }
         }
 
-        // проверка на циклы
+        return flag;
+    }
 
-        return true;
+    private boolean dfs(Path start, Path current) {
+        if (current == start) {
+            return true;
+        }
+        boolean flag = false;
+        for (Node node : adjacencyList.get(current)) {
+            flag = flag || dfs(start, node.getPath());
+        }
+
+        return flag;
     }
 
     public ArrayList<Path> getFiles() {
