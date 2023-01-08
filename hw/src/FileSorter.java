@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
@@ -19,7 +20,7 @@ public class FileSorter {
     private void getFolderFiles() throws IOException {
         folderFiles = new ArrayList<>();
         try (Stream<Path> walk = Files.walk(Paths.get(folder))) {
-            walk.filter(Files::isRegularFile).sorted().forEach(folderFiles::add);
+            walk.filter(Files::isRegularFile).filter(p -> !String.valueOf(p).contains(".DS_Store")).sorted().forEach(folderFiles::add);
         }
     }
 
@@ -38,6 +39,11 @@ public class FileSorter {
 
     public void mergeFiles() {
         Path resultPath = Paths.get(result);
+        try {
+            Files.writeString(resultPath, "");
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
         folderFiles.stream()
                 .flatMap(path -> {
                     try {
@@ -48,7 +54,7 @@ public class FileSorter {
                 })
                 .forEach(line -> {
                     try {
-                        Files.writeString(resultPath, line + System.lineSeparator());
+                        Files.writeString(resultPath, line + System.lineSeparator() + System.lineSeparator(), StandardOpenOption.APPEND);
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
