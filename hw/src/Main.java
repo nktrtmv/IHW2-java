@@ -8,28 +8,31 @@ import java.util.Scanner;
 
 
 public class Main {
-    private static String folder = "test";
-    private static String result = "output/ans.txt";
+    private static String folder = "./test";
+    private static String result = "./result.txt";
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        int option = 0;
+        String option = "0";
         do {
             menu();
-            while (option != 1 && option != 2) {
+            while (!Objects.equals(option, "1") && !Objects.equals(option, "2")) {
                 try {
-                    option = in.nextInt();
+                    option = in.next();
+                    if (!Objects.equals(option, "1") && !Objects.equals(option, "2")){
+                        System.out.println("Неккоректный ввод. Введите '1' или '2'.");
+                    }
                 } catch (InputMismatchException ex) {
                     System.out.println("Неккоректный ввод. Введите '1' или '2'.");
                 }
             }
-            if (option == 1 || (getFolderDirectory(in) && getFileDirectory(in))) {
+            if (option.equals("1") || (getFolderDirectory(in) && getFileDirectory(in))) {
                 try {
                     FileSorter sorter = new FileSorter(folder, result);
                     if (sorter.sort()) {
                         sorter.mergeFiles();
                     } else {
-                        System.out.println("Ошибка при сортировки файлов.");
+                        System.out.println("Ошибка при сортировке файлов.");
                     }
                 } catch (IOException ex) {
                     System.out.println("Ошибка при получении файлов.");
@@ -39,9 +42,9 @@ public class Main {
             }
             System.out.println("Завершение программы.");
             System.out.println("Если вы желаете воспользоваться программой снова, введите 'y'.\n" +
-                    "Для завершения работы программы нажмите на любую кнопку.");
+                    "Для завершения работы программы введите любой другой текст.");
+            option = "0";
         } while (Objects.equals(in.next(), "y"));
-
     }
 
     private static boolean getFolderDirectory(Scanner in) {
