@@ -10,7 +10,7 @@ public class Node {
     private final Path path;
     private final ArrayList<Path> dependencies;
 
-    public Node(Path path, ArrayList<Path> allFiles){
+    public Node(Path path, ArrayList<Path> folderFiles){
         this.path = path;
         dependencies = new ArrayList<>();
         try {
@@ -18,19 +18,19 @@ public class Node {
             for (String line : lines) {
                 if (line.contains("require")) {
                     String require = line.substring(line.indexOf('‘') + 1, line.lastIndexOf('’'));
-                    for (Path filePath : allFiles) {
+                    for (Path filePath : folderFiles) {
                         if (require.contains(String.valueOf(filePath.getFileName()))) {
                             dependencies.add(filePath);
                         }
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException ex) {
             System.out.println("Пороизошла ошибка при чтении файла для нахождения зависимостей.");
-            throw new RuntimeException();
-        } catch (Exception e) {
+            throw new RuntimeException(ex);
+        } catch (Exception ex) {
             System.out.println("Пороизошла ошибка при работе с файлом из каталога!");
-            throw new RuntimeException();
+            throw new RuntimeException(ex);
         }
     }
 
