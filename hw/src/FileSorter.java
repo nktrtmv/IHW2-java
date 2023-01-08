@@ -26,12 +26,14 @@ public class FileSorter {
     public boolean sort() {
         try {
             FileGraph fileGraph = new FileGraph(folderFiles);
-            fileGraph.sort();
-            folderFiles = fileGraph.getFiles();
-            return true;
-        } catch (RuntimeException e) {
-            return false;
+            if (fileGraph.sort()) {
+                folderFiles = fileGraph.getFiles();
+                return true;
+            }
+        } catch (RuntimeException ex) {
+            System.out.println("Ошибка при создании графа и его сортировке.");
         }
+        return false;
     }
 
     public void mergeFiles() {
@@ -40,15 +42,15 @@ public class FileSorter {
                 .flatMap(path -> {
                     try {
                         return Files.lines(path);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
                     }
                 })
                 .forEach(line -> {
                     try {
                         Files.writeString(resultPath, line + System.lineSeparator());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
                     }
                 });
     }
