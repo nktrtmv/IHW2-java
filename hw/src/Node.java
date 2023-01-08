@@ -3,7 +3,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-
 import static java.nio.charset.Charset.defaultCharset;
 
 public class Node {
@@ -17,7 +16,8 @@ public class Node {
             List<String> lines = Files.readAllLines(path, defaultCharset());
             for (String line : lines) {
                 if (line.contains("require")) {
-                    String require = line.substring(line.indexOf('‘') + 1, line.lastIndexOf('’'));
+                    String require = line.substring(line.indexOf('\'') + 1, line.lastIndexOf('\'')); // Кавычка обычная одинарная
+//                    String require = line.substring(line.indexOf('‘') + 1, line.lastIndexOf('’')); // Кавычка из примера
                     for (Path filePath : folderFiles) {
                         if (require.contains(String.valueOf(filePath.getFileName()))) {
                             dependencies.add(filePath);
