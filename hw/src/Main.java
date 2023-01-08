@@ -6,9 +6,18 @@ import java.util.InputMismatchException;
 import java.util.Objects;
 import java.util.Scanner;
 
-
+/**
+ * Запуск программы и логика работы с пользователем
+ * */
 public class Main {
+    /**
+     * Директория папки теста
+     * */
     private static String folder = "./test";
+
+    /**
+     * Путь к файлу вывода
+     * */
     private static String result = "./result.txt";
 
     public static void main(String[] args) {
@@ -47,6 +56,9 @@ public class Main {
         } while (Objects.equals(in.next(), "y"));
     }
 
+    /**
+     * Получение пользовательской директории с консоли
+     * */
     private static boolean getFolderDirectory(Scanner in) {
         System.out.print("Введите директорию рабочей папки: ");
         folder = in.next();
@@ -58,6 +70,9 @@ public class Main {
         return true;
     }
 
+    /**
+     * Получение пути до файла вывода с консоли
+     * */
     private static boolean getFileDirectory(Scanner in) {
         System.out.print("Введите путь до итогового файла: ");
         result = in.next();
@@ -69,6 +84,9 @@ public class Main {
         return true;
     }
 
+    /**
+     * Меню
+     * */
     private static void menu() {
         System.out.println("1. Использовать директории по умолчанию.\n" +
                 "2. Выбрать директории.");

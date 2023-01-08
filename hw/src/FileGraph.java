@@ -1,10 +1,22 @@
 import java.nio.file.Path;
 import java.util.*;
 
+/**
+ * Граф файлов
+ * */
 public class FileGraph {
+    /**
+     * Список всех файлов
+     * */
     private ArrayList<Path> files;
+    /**
+     * Словарь - список смежности
+     * */
     private final HashMap<Path, ArrayList<Node>> adjacencyList;
 
+    /**
+     * Топологическая сортировка файлов в графе и выявление циклов.
+     * */
     public boolean sort() {
         HashMap<Path, Integer> inDegree = new HashMap<>();
         for (Path path : adjacencyList.keySet()) {
@@ -43,6 +55,9 @@ public class FileGraph {
         return true;
     }
 
+    /**
+     * Конструктор создающий список смежности по списку файлов
+     * */
     public FileGraph(ArrayList<Path> folderFiles) {
         this.files = folderFiles;
         ArrayList<Node> nodes = new ArrayList<>();
@@ -60,6 +75,9 @@ public class FileGraph {
         }
     }
 
+    /**
+     * Получение списка файлов
+     * */
     public ArrayList<Path> getFiles() {
         return files;
     }

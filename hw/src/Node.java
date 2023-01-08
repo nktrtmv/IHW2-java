@@ -5,10 +5,23 @@ import java.util.ArrayList;
 import java.util.List;
 import static java.nio.charset.Charset.defaultCharset;
 
+/**
+ * Вершина графа
+ * */
 public class Node {
+    /**
+     * Путь к файлу
+     * */
     private final Path path;
+
+    /**
+     * Пути к файлам зависимостям
+     * */
     private final ArrayList<Path> dependencies;
 
+    /**
+     * Конструктор считывает файлы на зависимости
+     * */
     public Node(Path path, ArrayList<Path> folderFiles){
         this.path = path;
         dependencies = new ArrayList<>();
@@ -34,10 +47,16 @@ public class Node {
         }
     }
 
+    /**
+     * Получение пути к файлу
+     * */
     public Path getPath() {
         return path;
     }
 
+    /**
+     * Получние списка зависимостей
+     * */
     public ArrayList<Path> getDependencies() {
         return dependencies;
     }

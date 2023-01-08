@@ -6,17 +6,37 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
+/**
+ * Запуск сортировки через граф и слияние файлов
+ * */
 public class FileSorter {
+    /**
+     * Папка тестов
+     * */
     private final String folder;
+
+    /**
+     * Путь к файлу вывода
+     * */
     private final String result;
+
+    /**
+     * Тестовые файлы
+     * */
     private ArrayList<Path> folderFiles;
 
+    /**
+     * Конструктор для инициализации полей и обновление списка файлов тестовой директории
+     * */
     public FileSorter(String folder, String result) throws IOException {
         this.folder = folder;
         this.result = result;
         getFolderFiles();
     }
 
+    /**
+     * Обновление списка файлов тестовой директории
+     * */
     private void getFolderFiles() throws IOException {
         folderFiles = new ArrayList<>();
         try (Stream<Path> walk = Files.walk(Paths.get(folder))) {
@@ -24,6 +44,9 @@ public class FileSorter {
         }
     }
 
+    /**
+     * Запуск сортировки через граф
+     * */
     public boolean sort() {
         try {
             FileGraph fileGraph = new FileGraph(folderFiles);
@@ -37,6 +60,9 @@ public class FileSorter {
         return false;
     }
 
+    /**
+     * Слияние файлов в одие и вывод
+     * */
     public void mergeFiles() {
         Path resultPath = Paths.get(result);
         try {
